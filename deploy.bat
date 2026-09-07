@@ -1,13 +1,13 @@
 @echo off
 setlocal EnableExtensions
 chcp 65001 >nul
-title Portfolio GitHub Deployment
+title Portfolio GitHub and Gitee Deployment
 
 cd /d "%~dp0"
 
 echo.
 echo ========================================
-echo   Portfolio deployment to GitHub
+echo   Portfolio deployment to GitHub and Gitee
 echo ========================================
 echo.
 
@@ -34,8 +34,15 @@ if errorlevel 1 (
     goto :failed
 )
 
+git remote get-url gitee >nul 2>nul
+if errorlevel 1 (
+    echo [ERROR] Git remote "gitee" is not configured.
+    goto :failed
+)
+
 echo Branch: %CURRENT_BRANCH%
-for /f "delims=" %%R in ('git remote get-url origin') do echo Remote: %%R
+for /f "delims=" %%R in ('git remote get-url origin') do echo GitHub: %%R
+for /f "delims=" %%R in ('git remote get-url gitee') do echo Gitee: %%R
 echo.
 git status --short
 echo.
@@ -50,11 +57,11 @@ set /p "COMMIT_MESSAGE=Commit message (Enter for automatic message): "
 if not defined COMMIT_MESSAGE set "COMMIT_MESSAGE=Update portfolio"
 
 echo.
-echo [1/4] Staging files...
+echo [1/5] Staging files...
 git add -A
 if errorlevel 1 goto :failed
 
-echo [2/4] Creating commit...
+echo [2/5] Creating commit...
 git diff --cached --quiet
 if errorlevel 1 (
     git commit -m "%COMMIT_MESSAGE%"
@@ -63,20 +70,28 @@ if errorlevel 1 (
     echo No new changes to commit; continuing with push.
 )
 
-echo [3/4] Synchronizing remote branch...
+echo [3/5] Synchronizing GitHub branch...
 git pull --rebase origin "%CURRENT_BRANCH%"
 if errorlevel 1 (
     echo [ERROR] Pull/rebase failed. Resolve the conflict, then run deploy.bat again.
     goto :failed
 )
 
-echo [4/4] Pushing to GitHub...
+echo [4/5] Pushing to GitHub...
 git push origin "%CURRENT_BRANCH%"
 if errorlevel 1 goto :failed
 
+echo [5/5] Pushing to Gitee...
+git push gitee "%CURRENT_BRANCH%"
+if errorlevel 1 (
+    echo [ERROR] GitHub was updated, but the Gitee push failed.
+    goto :failed
+)
+
 echo.
 echo Deployment completed successfully.
-echo If GitHub Pages is enabled, allow a few minutes for the site to update.
+echo GitHub and Gitee now contain the same branch revision.
+echo If Pages is enabled, allow a few minutes for the sites to update.
 goto :end
 
 :failed
@@ -89,4 +104,3 @@ exit /b 1
 echo.
 pause
 exit /b 0
-
