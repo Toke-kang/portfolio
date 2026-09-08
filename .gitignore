@@ -8,3 +8,5 @@ desktop.ini
 node_modules/
 .wrangler/
 cloudflare-dist/
+cloudflare-dist-current/
+cloudflare-tools/

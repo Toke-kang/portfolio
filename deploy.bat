@@ -1,13 +1,13 @@
 @echo off
 setlocal EnableExtensions
 chcp 65001 >nul
-title Portfolio GitHub and Gitee Deployment
+title Portfolio GitHub, Gitee and Cloudflare Deployment
 
 cd /d "%~dp0"
 
 echo.
 echo ========================================
-echo   Portfolio deployment to GitHub and Gitee
+echo   Portfolio deployment to GitHub, Gitee and Cloudflare
 echo ========================================
 echo.
 
@@ -57,11 +57,11 @@ set /p "COMMIT_MESSAGE=Commit message (Enter for automatic message): "
 if not defined COMMIT_MESSAGE set "COMMIT_MESSAGE=Update portfolio"
 
 echo.
-echo [1/5] Staging files...
+echo [1/6] Staging files...
 git add -A
 if errorlevel 1 goto :failed
 
-echo [2/5] Creating commit...
+echo [2/6] Creating commit...
 git diff --cached --quiet
 if errorlevel 1 (
     git commit -m "%COMMIT_MESSAGE%"
@@ -70,28 +70,34 @@ if errorlevel 1 (
     echo No new changes to commit; continuing with push.
 )
 
-echo [3/5] Synchronizing GitHub branch...
+echo [3/6] Synchronizing GitHub branch...
 git pull --rebase origin "%CURRENT_BRANCH%"
 if errorlevel 1 (
     echo [ERROR] Pull/rebase failed. Resolve the conflict, then run deploy.bat again.
     goto :failed
 )
 
-echo [4/5] Pushing to GitHub...
+echo [4/6] Pushing to GitHub...
 git push origin "%CURRENT_BRANCH%"
 if errorlevel 1 goto :failed
 
-echo [5/5] Pushing to Gitee...
+echo [5/6] Pushing to Gitee...
 git push gitee "%CURRENT_BRANCH%"
 if errorlevel 1 (
     echo [ERROR] GitHub was updated, but the Gitee push failed.
     goto :failed
 )
 
+echo [6/6] Publishing to Cloudflare Pages...
+call "%~dp0deploy-cloudflare.bat" --no-pause
+if errorlevel 1 (
+    echo [ERROR] GitHub and Gitee were updated, but Cloudflare Pages deployment failed.
+    goto :failed
+)
+
 echo.
 echo Deployment completed successfully.
-echo GitHub and Gitee now contain the same branch revision.
-echo If Pages is enabled, allow a few minutes for the sites to update.
+echo GitHub, Gitee, and Cloudflare Pages now contain the latest version.
 goto :end
 
 :failed
