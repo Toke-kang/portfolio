@@ -6,3 +6,5 @@ desktop.ini
 .vscode/
 .idea/
 node_modules/
+.wrangler/
+cloudflare-dist/
