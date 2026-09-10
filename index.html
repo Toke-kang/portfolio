@@ -103,7 +103,7 @@
     .skill-block h3,.era h3,.work-group-head h3{margin-top:0;margin-bottom:var(--content-gap)}
     #profile .capability-list{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin-top:0;border-top:0}
     #profile .capability{display:flex;flex-direction:column;align-items:flex-start;min-width:0;min-height:210px;padding:20px 18px;background:var(--panel);border:1px solid var(--line)}
-    #profile .capability b{min-height:0;margin:0 0 10px;color:var(--paper);line-height:1.42}
+    #profile .capability b{display:flex;align-items:flex-start;width:100%;height:68px;min-height:68px;margin:0 0 10px;color:var(--paper);line-height:1.42}
     #profile .capability p{margin:0;color:var(--muted);line-height:1.65}
     #profile .profile-description{width:100%;max-width:none}
     #profile .workflow-title{margin:0 0 18px;color:var(--acid);font:600 12px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.15em;text-transform:uppercase}
@@ -126,7 +126,7 @@
     .lab-highlight[data-state="far"]{z-index:2;transform:translate3d(0,67px,-160px) scale(.88);opacity:.38;filter:saturate(.4) brightness(.58)}
     .lab-highlight[data-state="past"]{z-index:1;transform:translate3d(0,-55px,-190px) scale(.86);opacity:0;filter:blur(5px)}
     .lab-showcase__controls{position:absolute;inset:0;z-index:8;pointer-events:none}.lab-showcase__controls button{position:absolute;top:50%;width:48px;height:48px;border:1px solid #ffffff55;border-radius:50%;background:#090c12c7;color:#fff;cursor:pointer;pointer-events:auto;backdrop-filter:blur(10px);transform:translateY(-50%);box-shadow:0 10px 28px #0008;transition:background-color .2s,color .2s,border-color .2s,transform .2s}.lab-showcase__controls [data-lab-prev]{left:18px}.lab-showcase__controls [data-lab-next]{right:18px}.lab-showcase__controls button:hover,.lab-showcase__controls button:focus-visible{background:var(--acid);color:#10140b;border-color:var(--acid);transform:translateY(-50%) scale(1.08)}
-    @media(max-width:850px){:root{--section-space:58px;--title-gap:20px}#profile .capability-list{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(260px,78vw);overflow-x:auto;padding-bottom:16px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--acid) transparent}#profile .capability{min-height:210px;scroll-snap-align:start}#skills{min-height:auto}#skills>.wrap{width:min(100% - 30px,1280px)}#skills .skills-layout{grid-template-columns:1fr;padding:26px}#skills .skill-block{min-height:0}.lab-showcase__nav{grid-template-columns:repeat(2,1fr)}.lab-showcase__tab{min-height:60px}.lab-showcase__stage{min-height:68vw}}
+    @media(max-width:850px){:root{--section-space:58px;--title-gap:20px}#profile .capability-list{display:grid;grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(260px,78vw);overflow-x:auto;padding-bottom:16px;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:var(--acid) transparent}#profile .capability{min-height:210px;scroll-snap-align:start}#profile .capability b{height:46px;min-height:46px}#skills{min-height:auto}#skills>.wrap{width:min(100% - 30px,1280px)}#skills .skills-layout{grid-template-columns:1fr;padding:26px}#skills .skill-block{min-height:0}.lab-showcase__nav{grid-template-columns:repeat(2,1fr)}.lab-showcase__tab{min-height:60px}.lab-showcase__stage{min-height:68vw}}
     @media(max-width:560px){.lab-showcase{gap:20px}.lab-showcase__tab{grid-template-columns:24px 1fr;padding:11px 7px}.lab-showcase__tab span,.lab-showcase__tab strong{font-size:11px}.lab-showcase__stage{min-height:112vw}.lab-highlight{border-radius:20px;clip-path:inset(0 round 20px)}.lab-highlight__media img{object-position:center top}.lab-highlight__shade{inset:28% 0 0}.lab-highlight p{font-size:13px;line-height:1.6}.lab-showcase__controls button{width:38px;height:38px}.lab-showcase__controls [data-lab-prev]{left:10px}.lab-showcase__controls [data-lab-next]{right:10px}}
     @media(prefers-reduced-motion:reduce){.lab-highlight,.lab-showcase__tab:after{transition:none}}
   </style>
@@ -208,10 +208,12 @@
       englishTitles[20]='AI Assistant';
       englishTitles[100]='OS Motion Design';englishTitles[101]='Landscape Desk Clock';
       const categoryEn={'产品渲染':'Product Rendering','游戏广告':'Game Advertising','系统动效':'System Motion'};
+      const careerTags={zh:['系统动效','动效框架','Android','研发协同','品牌视觉','产品动画','C4D / AE','三维视效','产品渲染','广告影像'],en:['System Motion','Motion Framework','Android','Engineering Collaboration','Brand Visuals','Product Animation','C4D / AE','3D Visual Effects','Product Rendering','Advertising Films']};
       function translateExtended(){
         const copy=careerCopy[language], career=document.querySelector('#career');
         career.querySelector('.section-title').innerHTML=copy[0];career.querySelector('.section-note').textContent=copy[1];
         career.querySelectorAll('.era h3').forEach((node,index)=>node.textContent=copy[2][index]);career.querySelectorAll('.era h4').forEach((node,index)=>node.textContent=copy[3][index]);career.querySelectorAll('.era p').forEach((node,index)=>{if(language==='en')node.textContent=careerBodyEn[index]});
+        career.querySelectorAll('.era-tags span').forEach((node,index)=>node.textContent=careerTags[language][index]);
         const navZh=['个人简介','工作经历','AI 项目','作品','联系'],navEn=['PROFILE','CAREER','AI PROJECT','WORKS','CONTACT'];document.querySelectorAll('.nav-links a').forEach((node,index)=>node.textContent=(language==='zh'?navZh:navEn)[index]);
         document.querySelector('.ai-link').href='https://brands-logic-entered-targets.trycloudflare.com';arrangeWorks();
       }
